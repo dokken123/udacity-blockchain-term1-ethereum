@@ -37,7 +37,7 @@
                     <label id="star-cent"></label>
                 </div>
             </div>
-
+            Star Token : <input id="star-token" value="210000" />
             <button id="show-button" onclick="showButtonClicked()">Show Star</button>
             
             Create star
@@ -78,7 +78,8 @@
                 web3 = new Web3(web3.currentProvider) // what Metamask injected 
             } else {
                 // Instantiate and set Ganache as your provider
-                web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/c543ddfc719f44d5a78b65641d3aa7f6"));
+                // web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/c543ddfc719f44d5a78b65641d3aa7f6"));
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545/"));
             }
 
             // The default (top) wallet account from a list of test accounts 
@@ -504,9 +505,10 @@
                         console.log(error)
                         return
                     }
-                    var account = accounts[0]
+                    var account = accounts[1];
                     console.log(account);
-                    var star = starNotary.tokenIdToStarInfo(210000, {from: account});
+                    let tokenId = document.getElementById("star-token").value;
+                    var star = starNotary.tokenIdToStarInfo(tokenId, {from: account});
 
                     console.log(star);
 
@@ -525,7 +527,7 @@
                         console.log(error)
                         return
                     }
-                    var account = accounts[0]
+                    var account = accounts[1]
                     console.log(account);
                     let starToken = document.getElementById("i-star-token").value;
                     let starName = document.getElementById("i-star-name").value;
