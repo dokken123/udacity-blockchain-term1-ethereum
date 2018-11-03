@@ -44,30 +44,33 @@
             
             <div class="row">
                 <label class="bold">Star Token:</label>
-                <input id="i-star-token" />
+                <input id="i-star-token" value="210001" />
             </div>
             <div class="row">
                 <label class="bold">Star Name:</label>
-                <input id="i-star-name" />
+                <input id="i-star-name" value="test star" />
             </div>
 
 
             <div class="row">
                 <label class="bold">Star Story:</label>
-                <input id="i-star-story" />
+                <input id="i-star-story" value="a star for test" />
             </div>
             
             <div class="row">
                 <label class="bold">Star Coordinate:</label>
                 <div>
-                    <input id="i-star-dec" />
+                    DEC: <input id="i-star-dec" value="dec_241.874" />
                 </div>
                 <div>
-                    <input id="i-star-mag" />
+                    MAG: <input id="i-star-mag" value="mag_144.978" />
                 </div>
                 <div>
-                    <input id="i-star-cent" />
+                    CENT: <input id="i-star-cent" value="ra_232.155" />
                 </div>
+            </div>
+            <div class="row">
+                <label id="i-tx-result"></label>
             </div>
             <button id="claim-button" onclick="claimButtonClicked()">Create Star</button>
         </div>
@@ -83,8 +86,8 @@
             }
 
             // The default (top) wallet account from a list of test accounts 
-            web3.eth.defaultAccount = web3.eth.accounts[0];
-
+            web3.eth.defaultAccount = web3.eth.accounts[1];
+            web3.personal.unlockAccount(web3.eth.defaultAccount, 'megadeth');
             // The interface definition for your smart contract (the ABI) 
             var StarNotary = web3.eth.contract(
                 [
@@ -536,17 +539,15 @@
                     let starDec = document.getElementById("i-star-dec").value;
                     let starMag = document.getElementById("i-star-mag").value;
 
-                    var starClaimedEvent = starNotary.createStar(starName, starStory, starRa, starDec,
+                    var txid = starNotary.createStar(starName, starStory, starRa, starDec,
                     starMag,
-                     starToken, {from: account});
-                    starClaimedEvent.watch(function(error, result) {
-                        if (!error) {
-                            location.reload();
-                            alert("success!");
+                     starToken, {from: account, gas: 450000}, (error, result) => {
+                        if (error) {
+                          document.getElementById("i-tx-result").innerText = "Error:" + error;
                         } else {
-                            console.log('watching for star claimed event is failing');
+                          document.getElementById("i-tx-result").innerText = "Transaction:" + result;
                         }
-                    });
+                     });
                 })
             }
         </script>
