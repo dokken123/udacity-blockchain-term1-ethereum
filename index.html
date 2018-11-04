@@ -38,6 +38,9 @@
                 </div>
             </div>
             Star Token : <input id="star-token" value="210000" />
+            <div class="row">
+                <label id="show-star-result"></label>
+            </div>
             <button id="show-button" onclick="showButtonClicked()">Show Star</button>
             
             Create star
@@ -86,8 +89,7 @@
             }
 
             // The default (top) wallet account from a list of test accounts 
-            web3.eth.defaultAccount = web3.eth.accounts[1];
-            web3.personal.unlockAccount(web3.eth.defaultAccount, 'megadeth');
+            web3.eth.defaultAccount = web3.eth.accounts[0];
             // The interface definition for your smart contract (the ABI) 
             var StarNotary = web3.eth.contract(
                 [
@@ -508,18 +510,25 @@
                         console.log(error)
                         return
                     }
-                    var account = accounts[1];
+                    var account = accounts[0];
                     console.log(account);
                     let tokenId = document.getElementById("star-token").value;
-                    var star = starNotary.tokenIdToStarInfo(tokenId, {from: account});
+                    var star = starNotary.tokenIdToStarInfo(tokenId, {from: account}, (error, result) => {
+                        console.log(result);
 
-                    console.log(star);
+                        if (error) {
+                          document.getElementById("show-star-result").innerText = "Error:" + error;
+                        } else {
+                          document.getElementById("show-star-result").innerText = "";
+                          document.getElementById("star-name").innerText = result[0];
+                          document.getElementById("star-story").innerText = result[1];
+                          document.getElementById("star-dec").innerText = result[4];
+                          document.getElementById("star-mag").innerText = result[2];
+                          document.getElementById("star-cent").innerText = result[3];
+                        }
+                    });
 
-                    document.getElementById("star-name").innerText = star[0];
-                    document.getElementById("star-story").innerText = star[1];
-                    document.getElementById("star-dec").innerText = star[4];
-                    document.getElementById("star-mag").innerText = star[2];
-                    document.getElementById("star-cent").innerText = star[3];
+                    
                    
                 })
             }
@@ -530,7 +539,7 @@
                         console.log(error)
                         return
                     }
-                    var account = accounts[1]
+                    var account = accounts[0]
                     console.log(account);
                     let starToken = document.getElementById("i-star-token").value;
                     let starName = document.getElementById("i-star-name").value;
